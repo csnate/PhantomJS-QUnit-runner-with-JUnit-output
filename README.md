@@ -1,4 +1,4 @@
-# PhantomJS QUnit Runner
+# PhantomJS QUnit Runner with JUnit output
 
 Run your QUnit tests using PhantomJS.  The scripts will output the results in a JUnit XML format that can be integrated into your favorite CI environment, like Jenkins.
 
