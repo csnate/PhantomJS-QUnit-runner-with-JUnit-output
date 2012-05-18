@@ -8,6 +8,7 @@ Run your QUnit tests using PhantomJS. The scripts will output the results in a J
 * You are using Ant to build your project. While this hasn't been tested with any other build scripts, porting over to another should be fairly simple as all of the logic is contained in the JavaScript files
 * These build scripts assume you are using a Linux server with PhantomJS installed at /usr/local/bin/phantomjs, however you can change this by updating the phantomjs.executable property in the build script (NOTE - has not been tested on Windows)
 * I'm assuming you will want these results outputted to an XML file that can be consumed by your CI environment. Since most CI environments have support for JUnit, I'm using the JUnit XML format. If you want to use something else, simply change the way the XML is constructed and returned in cModuleResult.getXml(), cModuleTestCaseResult.getXml() and cModuleTestCaseResult.getFailureXml().
+* All tests MUST include qunit-junit-outputter.js in the file, otherwise the XML will not be written.  An example test is included at example-test.html.
 
 ## Build example
 
@@ -34,9 +35,14 @@ The target ci-run-qunit-test takes the following parameters:
     * this is a timeout value (in milliseconds) that the runner will use before it considers the test to have failed.  Default is 30 seconds (30000).
 	
 ## Links
-[PhantomJS] (http://phantomjs.org/)
-[QUnit] (http://docs.jquery.com/QUnit)
+[PhantomJS](http://phantomjs.org/)
+[QUnit Docs](http://docs.jquery.com/QUnit)
+[QUnit Repo](https://github.com/jquery/qunit)
 
 ## Notes
 
-A lot of this work started when I was looking how to integrate QUnit tests into our build and found a blog post by [Eric Wendelin](http://eriwen.com/tools/continuous-integration-for-javascript/) and his [javascript-stacktrace](https://github.com/eriwen/javascript-stacktrace) GitHub repo. I've taken most of his work there, made the JavaScript more robust/testable/extensible, and ported the build over to Ant. Finally, while this is written for QUnit, porting this over to use another JavaScript unit testing framework, like Jasmine, should be easy. As long as the testing framework has hooks into similiar start/done methods as QUnit you can update the cJUnitOutputter.init method to call the cJUnitOutputter methhods where appropriate.
+A lot of this work started when I was looking how to integrate QUnit tests into our build and found a blog post by [Eric Wendelin](http://eriwen.com/tools/continuous-integration-for-javascript/) and his [javascript-stacktrace](https://github.com/eriwen/javascript-stacktrace) GitHub repo. I've taken most of his work there, made the JavaScript more robust/testable/extensible, and ported the build over to Ant.  
+
+I know what you're going to ask - why didn't you just use the junitlogger and phantomjs addons included in the QUnit repo? Because I could never get them to work with asynchronus tests or with a large number of tests at the same time, so I developed something more complete.  Also, no solution I've seen correctly handles other console.log statements in your code.
+
+Finally, while this is written for QUnit, porting this over to use another JavaScript unit testing framework, like Jasmine, should be easy. As long as the testing framework has hooks into similiar start/done methods as QUnit you can update the cJUnitOutputter.init method to call the cJUnitOutputter methhods where appropriate.
