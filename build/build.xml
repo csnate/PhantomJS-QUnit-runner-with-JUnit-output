@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JavaScriptUnitTests" default="ci-qunit-tests" basedir=".">
+	
+	<!-- This is the location of where all test XML files will live -->
+	<property name="folder.tests" value="${basedir}/build/TESTS" />
+	
+	<!-- This is the path to the lib folder that contains the phantom-qunit-runner.js file -->
+	<property name="folder.lib" value="${basedir}/lib" />
+	
+	<!-- This is the path on the build server to the PhantomJS executable -->
+	<property name="phantomjs.executable" value="/usr/local/bin/phantomjs" />
+	
+	
+	<!-- 
+		Target to call each test.  Should not be called directly, but called with an antcall block in ci-qunit-tests instead
+		
+		@param test.url the full url to the test HTML file that will run the QUnit tests
+		@param test.result.file the name of the test results XML file
+		@param test.timeout optional timeout value used to stop test from running if it's taking too long
+	-->
+	<target name="ci-run-qunit-test">
+		
+		<!-- Default the timeout value if it isn't passed -->
+		<var name="timeout" value="${test.timeout}" />
+		<if>
+			<equals arg1="${timeout}" arg2="" />
+			<then>
+				<var name="timeout" value="30000" />
+			</then>
+		</if>
+		
+		<echo>Running ${phantomjs.executable} ${folder.lib}/phantomjs-qunit-runner.js ${test.url} --outputformat=junit --outputmarker=@PHANTOM --timeout=${timeout}</echo>
+		
+		<exec 	executable="${phantomjs.executable}"
+				output="${folder.tests}/${test.result.file}"
+				failonerror="false"
+				resultproperty="exitCode"
+		>
+			<arg value="${folder.lib}/phantomjs-qunit-runner.js" />
+			<arg value="${test.url}" />
+			<arg value="--outputformat=junit" />
+			<arg value="--outputmarker=@PHANTOM" />
+			<arg value="--timeout=${timeout}" />
+		</exec>
+		
+		<if>
+			<not>
+				<equals arg1="${exitCode}" arg2="0" />
+			</not>
+			<then>
+				<echo>Tests failed with exit code ${exitCode}</echo>
+			</then>
+		</if>
+	</target>
+	
+	
+	<!--
+		The main target to call that will run all of your tests
+	-->
+	<target name="ci-qunit-tests">
+		
+		<!-- Make the directory that will hold the test results -->
+		<mkdir dir="${folder.tests}" />
+		
+		<!-- Example call with the minimum -->
+		<antcall target="ci-run-qunit-test">
+			<param name="test.url" value="http://localhost/WS/test/test1.html" />
+			<param name="test.result.file" value="test1.xml" />
+		</antcall>
+		
+		<!-- Example call with all options -->
+		<antcall target="ci-run-qunit-test">
+			<param name="test.url" value="http://localhost/WS/test/test2.html" />
+			<param name="test.result.file" value="test2.xml" />
+			<param name="test.timeout" value="60000" />
+		</antcall>
+		
+	</target>
+	
+</project>
