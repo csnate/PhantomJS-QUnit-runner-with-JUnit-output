@@ -31,8 +31,8 @@ The target ci-run-qunit-test takes the following parameters:
 * test.result.file - REQUIRED
     * this is the output XML file that will be produced.  The file should be saved in your local workspace.
 	* EX: ./build/TESTS/some-test.tests.xml
-* test.timeout - OPTIONAL
-    * this is a timeout value (in milliseconds) that the runner will use before it considers the test to have failed.  Default is 30 seconds (30000).
+* test.timeout - REQUIRED
+    * this is a timeout value (in milliseconds) that the runner will use before it considers the test to have failed.
 	
 ## Links
 [PhantomJS](http://phantomjs.org/)

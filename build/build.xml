@@ -16,20 +16,11 @@
 		
 		@param test.url the full url to the test HTML file that will run the QUnit tests
 		@param test.result.file the name of the test results XML file
-		@param test.timeout optional timeout value used to stop test from running if it's taking too long
+		@param test.timeout timeout value used to stop test from running if it's taking too long
 	-->
 	<target name="ci-run-qunit-test">
 		
-		<!-- Default the timeout value if it isn't passed -->
-		<var name="timeout" value="${test.timeout}" />
-		<if>
-			<equals arg1="${timeout}" arg2="" />
-			<then>
-				<var name="timeout" value="30000" />
-			</then>
-		</if>
-		
-		<echo>Running ${phantomjs.executable} ${folder.lib}/phantomjs-qunit-runner.js ${test.url} --outputformat=junit --outputmarker=@PHANTOM --timeout=${timeout}</echo>
+		<echo>Running ${phantomjs.executable} ${folder.lib}/phantomjs-qunit-runner.js ${test.url} --outputformat=junit --outputmarker=@PHANTOM --timeout=${test.timeout}</echo>
 		
 		<exec 	executable="${phantomjs.executable}"
 				output="${folder.tests}/${test.result.file}"
@@ -40,7 +31,7 @@
 			<arg value="${test.url}" />
 			<arg value="--outputformat=junit" />
 			<arg value="--outputmarker=@PHANTOM" />
-			<arg value="--timeout=${timeout}" />
+			<arg value="--timeout=${test.timeout}" />
 		</exec>
 		
 		<if>
@@ -62,13 +53,14 @@
 		<!-- Make the directory that will hold the test results -->
 		<mkdir dir="${folder.tests}" />
 		
-		<!-- Example call with the minimum -->
+		<!-- Example 1 -->
 		<antcall target="ci-run-qunit-test">
 			<param name="test.url" value="http://localhost/WS/test/test1.html" />
 			<param name="test.result.file" value="test1.xml" />
+			<param name="test.timeout" value="10000" />
 		</antcall>
 		
-		<!-- Example call with all options -->
+		<!-- Example 2 -->
 		<antcall target="ci-run-qunit-test">
 			<param name="test.url" value="http://localhost/WS/test/test2.html" />
 			<param name="test.result.file" value="test2.xml" />
