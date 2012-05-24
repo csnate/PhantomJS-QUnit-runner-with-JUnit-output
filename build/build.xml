@@ -20,7 +20,7 @@
 	-->
 	<target name="ci-run-qunit-test">
 		
-		<echo>Running ${phantomjs.executable} ${folder.lib}/phantomjs-qunit-runner.js ${test.url} --outputformat=junit --outputmarker=@PHANTOM --timeout=${test.timeout}</echo>
+		<echo>Running ${phantomjs.executable} ${folder.lib}/phantomjs-qunit-runner.js ${test.url} --outputformat=junit --timeout=${test.timeout}</echo>
 		
 		<exec 	executable="${phantomjs.executable}"
 				output="${folder.tests}/${test.result.file}"
@@ -30,7 +30,6 @@
 			<arg value="${folder.lib}/phantomjs-qunit-runner.js" />
 			<arg value="${test.url}" />
 			<arg value="--outputformat=junit" />
-			<arg value="--outputmarker=@PHANTOM" />
 			<arg value="--timeout=${test.timeout}" />
 		</exec>
 		
